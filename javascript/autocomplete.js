@@ -1,67 +1,44 @@
 
-
-class Cities {
-    /*
-    Trida zodpovedna za nacitany dat z json souboru
-    */
-    constructor(cityData) {
-        this.cityData = cityData;
-        this.cities = [];
-    }
-
-    async loadCities() {
-        const response = await fetch(this.cityData);
-        this.cities = await response.json();
-
-        return this.cities;
-    }
-}
-
-
-
-class Autocomplete {
+export class Autocomplete {
     /*
     Trida zodpovedna za logiku naseptavace
     */
-    constructor(inputBox, resultBox , allCities) {
+    constructor(inputBox, resultBox , cities) {
         this.inputBox = document.getElementById(inputBox);
         this.resultBox = document.querySelector(resultBox);
-        this.allCities = allCities;
+        this.cities = cities;
 
         this.inputBox.addEventListener("keyup", () => this.onkeyUp());
     }
 
     onkeyUp() {
         /*
-        Funkce, ktera se vola pri psani znaku do inputBox
+        Metoda, ktera se provadi pri psani znaku do inputBox
         */
-        let result = []; //pole pro uchovani nazvu mest
+        let result = []; //pole pro uchovani objektu mest
         let input = this.inputBox.value;
 
         if(input.length) {
             //filtrace mest podle nazvu, ktere odpovidaji hodnote v naseptavaci
-            result = this.allCities.filter(city => {
+            result = this.cities.filter(city => {
                 return city.name.toLowerCase().includes(input.toLowerCase());
             });
-
-            //nakonec se ulozi jen nazvy mest, ne cele objekty
-            result = result.map(city => city.name);
-
-            this.display(result);
         }
+        this.display(result.map(city => city.name));
     }
 
-    display(result) {
+    display(resultNames) {
         /*
-        Funkce pro samotne vypsani seznamu vhodnych mest
+        Metoda pro samotne vypsani seznamu vhodnych mest
         */
 
         this.resultBox.innerHTML = ""; //zresetovani vysledku naseptavace - odstraneni kontentu uvnitr elementu
 
+
         //seznam validnich mest jako seznam
         const validCitiesList = document.createElement("ul");
 
-        result.forEach(cityName => {
+        resultNames.forEach(cityName => {
             //validni mesto jako radek/cast seznamu
             const validCity = document.createElement("li"); 
 
@@ -82,10 +59,3 @@ class Autocomplete {
         this.resultBox.appendChild(validCitiesList);
     }
 }
-
-
-const allCities = new Cities("../city_data/city.list.json");
-allCities.loadCities().then(function() {
-    //cekani na nacteni mest
-    const autocomplete = new Autocomplete("input-box", ".result-box", allCities.cities);
-});
