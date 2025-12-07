@@ -1,5 +1,5 @@
 
-export class SearchHandler {
+export class WeatherSearcher {
     /*
     Trida pro obsluhu vyhledani informaci o pocsi ve vyhledavanem meste
     */
@@ -10,9 +10,14 @@ export class SearchHandler {
         this.cities = cities;
 
         this.searchButton.addEventListener("click", () => this.searchWeather());
+
+        //pripravene pro call back funkci
+        this.weatherDataLoaded = null;
+
+        this.weatherData = null;
     }
 
-    get_correctCity(result) {
+    correctCity(result) {
         /*
         Filter nefiltruje dokonale. Napriklad inputu "Jeseník" odpovídá "Jeseník" a zároveň "Jeseník nad Odrou".
         Proto by nastala situace, ze pro input "Jeseník" bychom dostaly data pro "Jeseník nad odrou", kdybychom automaticky brali
@@ -30,7 +35,7 @@ export class SearchHandler {
         }
         return resultIndex;
     }
-    get_searchObject() {
+    searchObject() {
         /*
         Funkce pro ziskani objektu mesta podle nazvu mesta v hledacku
         */
@@ -41,43 +46,26 @@ export class SearchHandler {
             return city.name.toLowerCase().includes(input.toLowerCase());
         });
         
-        if(result.length > 1) { //pokud existuje vice mest, kde nazev jednoho z mest je prodlouzeni nazvu mesta jineho
-            return result[this.get_correctCity(result)];
+        if(result.length > 1) { //kdyz existuje vice mest, kde nazev jednoho z mest je prodlouzeni nazvu mesta jineho
+            return result[this.correctCity(result)];
         }
         return result[0];
     }
+
+
     async searchWeather() {
         /*
-        Metoda samotne obstarani vyhledani pocasi v danem meste
+        Řídící metoda pro obsluhu vyhledání počasí pro zadané město
         */
-        let result = this.get_searchObject();
+        let result = this.searchObject();
         
         let response = await fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${result.coord.lat}&lon=${result.coord.lon}&appid=12e49942ab49cef19008daf14e55b97e&units=metric`);
-        let weatherData = await response.json();
-        console.log(weatherData);
+        this.weatherData = await response.json();
+        // ^ "weatherData" nyni obsahuje udaje o predpovedi pocasi pro zadane mesto na 5 dni dopredu s 3hod rozestupy. Celkem tedy 40 zaznamu
+        
+        //pokud se nastavila callback funkce, zavola se. Call back funkce se nastavuje v mainu
+        if (typeof this.weatherDataLoaded === "function") {
+            this.weatherDataLoaded(this.weatherData);
+        }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

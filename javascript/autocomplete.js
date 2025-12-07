@@ -3,12 +3,20 @@ export class Autocomplete {
     /*
     Trida zodpovedna za logiku naseptavace
     */
-    constructor(inputBox, resultBox , cities) {
+    constructor(inputBox, resultBox , cities, weatherRenderer) {
         this.inputBox = document.getElementById(inputBox);
         this.resultBox = document.querySelector(resultBox);
         this.cities = cities;
 
         this.inputBox.addEventListener("keyup", () => this.onkeyUp());
+    }
+    normalizeInput(input) {
+        /*
+        Metoda pro odignorovani diakritiky a velikosti pisma pro lepsi filtraci hledani
+        */
+        let asciiInput = input.normalize('NFKD').replace(/[^\w\s.-_\/]/g, '');
+        let normalizedInput = asciiInput.toLowerCase();
+        return normalizedInput;
     }
 
     onkeyUp() {
@@ -19,11 +27,11 @@ export class Autocomplete {
         let input = this.inputBox.value;
 
         if(input.length) {
-            //filtrace mest podle nazvu, ktere odpovidaji hodnote v naseptavaci
             result = this.cities.filter(city => {
-                return city.name.toLowerCase().includes(input.toLowerCase());
+                return this.normalizeInput(city.name).includes(this.normalizeInput(input));
             });
         }
+
         this.display(result.map(city => city.name));
     }
 
