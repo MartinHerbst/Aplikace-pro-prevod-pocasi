@@ -3,9 +3,14 @@ export class Autocomplete {
     /*
     Trida zodpovedna za logiku naseptavace
     */
-    constructor(inputBox, resultBox , cities, weatherRenderer) {
+    constructor(inputBox, resultBox , cities) {
+        /**
+         * @param {string} inputBox - ID input elementu pro vyhledavani
+         * @param {string} resultBox - ID elementu, kde se ma naseptava ukazovat
+         * @param {list} cities - pole objektu mest
+         */
         this.inputBox = document.getElementById(inputBox);
-        this.resultBox = document.querySelector(resultBox);
+        this.resultBox = document.getElementById(resultBox);
         this.cities = cities;
 
         this.inputBox.addEventListener("keyup", () => this.onkeyUp());

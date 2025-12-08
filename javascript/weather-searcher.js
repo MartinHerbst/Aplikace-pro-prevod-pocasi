@@ -4,6 +4,13 @@ export class WeatherSearcher {
     Trida pro obsluhu vyhledani informaci o pocsi ve vyhledavanem meste
     */
     constructor(apiKey, searchButton, inputBox, cities) {
+        /**
+         * Konstruktor pro inicializaci. Pridava eventListener na "click" pro tlacitko.
+         * @param {API KEY} apiKey - API key
+         * @param {string} searchButton - ID tlacitka, ktere slouzi pro "vyhledat"
+         * @param {string} inputBox - ID inputu, do ktereho se pise hledane mesto
+         * @param {list} cities - pole objektu mest
+         */
         this.apiKey = apiKey;
         this.searchButton = document.getElementById(searchButton);
         this.inputBox = document.getElementById(inputBox);
