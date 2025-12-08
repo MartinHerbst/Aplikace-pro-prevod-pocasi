@@ -12,44 +12,42 @@ export class WeatherRenderer {
         Ridici metoda pro vykresleni dat
         */
         console.log(weatherData);
-        this.resetContent();
-        this.createHeading();
+
+        //Otestovani zda uz existuje nadpis, pokud ano, tak se smaze
+        if (this.weatherOutput.querySelector("h1") != null) {
+            this.weatherOutput.querySelector("h1").remove();
+        }
+
+        this.createTextElement("h1",this.weatherOutput, "Počasí ", document.getElementById("input-box"));
 
         let count = 0;
         let dayIndex = 0;
-
         for(let i=0;i<weatherData.list.length;i++) {
-            count++;
             if(count == 8) {
                 dayIndex++;
                 count = 0;
             }
-            this.printData(this.outputTargets[dayIndex], weatherData.list[i].dt)
+            count++;
+            this.createTextElement("p", document.getElementById(this.outputTargets[dayIndex]), weatherData.list[i].dt) 
+        }
+    }
 
+    createTextElement(elementType, target, payload, source=null) {
+        /*
+        Metoda pro vytvoreni nadpisu.
+        elementType -> jaky element se ma vytvorit
+        target -> kde se ma vytvorit
+        payload -> samotny text
+        source -> volitelny parametr, ktery se pouzije, pokud chceme pripojit cast textu z nejakeho existujiciho zdroje -> napr pouziti nazvu mesta v hledacku
+        */
+        let h = document.createElement(elementType);
+        if(source != null) {
+            h.textContent = payload + source.value;
+        } else {
+            h.textContent = payload;
         }
 
-    }
-    
-    printData(element, data) {
-        let p = document.createElement("p");
-        let target = document.getElementById(element);
-        p.textContent = data;
-        target.appendChild(p);
-    }
-        
-    createHeading() {
-        /*
-        Metoda pro vytvoreni nadpisu, nestaci informace o nazvu mesta z weatherData, jelikoz nektera mesta nejsou pojmenovana zcela spravne
-        */
-        let cityName = document.getElementById("input-box").value;
-        let h = document.createElement("h1");
-        h.textContent = "Počasí " + cityName;
-        this.weatherOutput.appendChild(h);
-    }
-    resetContent() {
-        /*
-        Vymazani obsahu
-        */
-        this.weatherOutput.innerHTML = "";
+        target.appendChild(h);
+
     }
 }
