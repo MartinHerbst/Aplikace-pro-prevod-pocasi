@@ -5,7 +5,7 @@ import { WeatherRenderer }    from "./weather-renderer.js";
 
 
 
-const weatherRenderer = new WeatherRenderer("#weather-output");
+const weatherRenderer = new WeatherRenderer("#weather-output", 5);
 const allCities = new Cities("../city_data/city.list.json");
 allCities.loadCities().then(function() {
     //cekani na nacteni mest
