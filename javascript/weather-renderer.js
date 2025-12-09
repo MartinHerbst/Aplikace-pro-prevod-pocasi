@@ -1,38 +1,39 @@
+import { DOMBuilder } from "./dom-builder.js";
+import { DayWeather } from "./day-weather.js";
 
 export class WeatherRenderer {
     /*
-    Trida pro vykresleni informaci o predpovedi pocasi
+    Ridici trida pro generovani a DOM struktury widgetu pocasi
     */
     constructor (weatherOutput, dayCount) {
         /**
-         * Konstruktor vytvari strukturu DOM pro jednotlive dny
          * @param {string} weatherOutput - ID elementu, ve kterem se struktura vytvori
          * @param {number} dayCount - pocet dni
          */
-        this.weatherOutput = weatherOutput;
+
+        this.weatherOutput = document.getElementById(weatherOutput);
         this.dayCount = dayCount;
 
-        const heading = document.createElement("h1");
-        document.getElementById(this.weatherOutput).prepend(heading);
-
-        const wrapper = document.createElement("div");
-        wrapper.classList.add("wrapper");
-        document.getElementById(weatherOutput).appendChild(wrapper);
-        
-        for(let i=0;i<dayCount;i++){
-            let dayDiv = document.createElement("div");
-            dayDiv.classList.add(`day-${i+1}`);
-            wrapper.appendChild(dayDiv);
-        }
+        this.domBuilder = new DOMBuilder();
     }
+
     renderData(weatherData) {
         /*
         Ridici metoda pro vypis udaju o pocasi
         */
         console.log(weatherData.list);
-        
-        document.getElementById(this.weatherOutput).querySelector("h1").textContent = "Aktuální počasí " + weatherData.city.name;
 
+        this.domBuilder.appendHeading(weatherData.city.name);
+        const wrapper = this.domBuilder.appendDiv("wrapper");
+        this.domBuilder.setParent(wrapper);
+        
+        for(let i=0;i<this.dayCount;i++){
+            this.domBuilder.appendDiv(`day-${i+1}`);
+        }
+        this.domBuilder.setParent(this.domBuilder.root);
+
+        this.weatherOutput.appendChild(this.domBuilder.root);
+        
         for(let i=0;i<this.dayCount;i++){
             let start = i*((weatherData.list.length)/this.dayCount);
             let end = ((i+1)*((weatherData.list.length)/this.dayCount));
@@ -47,19 +48,8 @@ export class WeatherRenderer {
          * @param {string} target - class name elementu, kde se maji data vypsat
          * @param {list}  data - pole s daty k vypsani
          */
-
+        let test = new DayWeather(data, this.dayCount);
         
           
     }
 }
-
-
-
-
-/*
-Poznamka pro priste:
-Asi by bylo hezci udelat novou tridu, napr expot class dayWeather{}, kterou bych zavolal z setWeatherData, napr const dayOne = new dayWeather(this.setWeatherData(`day-${i+1}`, chunk));
-V teto tride bych pak data zinicializoval a udelat gettery, kterymi bych vypisoval data do cilenych dom elementu.
-WeatherRendere by mel pouze generovat DOM, ale data o pocasi by uz bral ze trid jednotlivych dni.
-
-*/

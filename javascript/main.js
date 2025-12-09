@@ -1,23 +1,52 @@
-import { Cities }           from "./cities-loader.js";
-import { Autocomplete }     from "./autocomplete.js";
-import { WeatherSearcher }  from "./weather-searcher.js";
-import { WeatherRenderer }    from "./weather-renderer.js";
+import { Cities }               from "./cities-loader.js";
+import { Autocomplete }         from "./autocomplete.js";
+import { WeatherSearcher }      from "./weather-searcher.js";
+import { WeatherRenderer }      from "./weather-renderer.js";
 
-
-
-const weatherRenderer = new WeatherRenderer("weather-output", 5);
-const allCities = new Cities("../city_data/city.list.json");
-allCities.loadCities().then(function() {
-    //cekani na nacteni mest
-    const autocomplete = new Autocomplete("input-box", "result-box", allCities.cities);
-
-    const weatherSearcher = new WeatherSearcher("12e49942ab49cef19008daf14e55b97e", "search-weather-btn", "input-box", allCities.cities);
-
-    //nastaveni call back funkce
-    weatherSearcher.weatherDataLoaded = function(weatherData) {
-        weatherRenderer.renderData(weatherData);
+class WeatherApp {
+    constructor(config) {
+        this.config = config;
+        this.init();
     }
+
+    async init() {
+
+        this.weatherRenderer = new WeatherRenderer(
+            this.config.weatherOutputId, 
+            this.config.dayCount
+        );
+
+        this.allCities = new Cities(this.config.cityDataSrc);
+
+        //cekani na nacteni mest
+        await this.allCities.loadCities();
+
+        this.autocomplete = new Autocomplete(
+            this.config.inputBoxId, 
+            this.config.resultBoxId, 
+            this.allCities.cities
+        );
+
+        this.weatherSearcher = new WeatherSearcher(
+            this.config.apiKey,
+            this.config.searchBtnId,
+            this.config.inputBoxId,
+            this.allCities.cities
+        );
+
+        //nastaveni call back funkce
+        this.weatherSearcher.weatherDataLoaded = (weatherData) => {
+            this.weatherRenderer.renderData(weatherData);
+        };
+    }
+}
+
+const app = new WeatherApp({
+    weatherOutputId: "weather-output",
+    dayCount: 5,
+    cityDataSrc: "../city_data/city.list.json",
+    inputBoxId: "input-box",
+    resultBoxId: "result-box",
+    searchBtnId: "search-weather-btn",
+    apiKey: "12e49942ab49cef19008daf14e55b97e"
 });
-
-
-
