@@ -12,6 +12,7 @@ class WeatherApp {
     async init() {
 
         this.weatherRenderer = new WeatherRenderer(
+            this.config.inputBoxId,
             this.config.weatherOutputId, 
             this.config.dayCount
         );

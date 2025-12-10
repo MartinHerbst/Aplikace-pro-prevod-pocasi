@@ -9,7 +9,7 @@ export class WeatherSearcher {
          * @param {API KEY} apiKey - API key
          * @param {string} searchButton - ID tlacitka, ktere slouzi pro "vyhledat"
          * @param {string} inputBox - ID inputu, do ktereho se pise hledane mesto
-         * @param {list} cities - pole objektu mest
+         * @param {list} cities - pole objektu mest 
          */
         this.apiKey = apiKey;
         this.searchButton = document.getElementById(searchButton);
