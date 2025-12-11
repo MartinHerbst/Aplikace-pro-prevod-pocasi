@@ -16,9 +16,7 @@ export class WeatherRenderer {
         this.weatherOutput = document.getElementById(weatherOutput);
         this.dayCount = dayCount;
 
-        const defaulCity = this.loadDefaulCity(this.dayCount);
-        this.weatherOutput.appendChild(defaulCity);
-
+        const defaulCity = this.loadDefaulCity();
     }
 
     renderData(weatherData) {
@@ -26,18 +24,22 @@ export class WeatherRenderer {
         Ridici metoda pro vypis udaju o pocasi
         */
         console.log(weatherData.list);
-        
-        const myTree = this.treeConstructor(this.input.value, this.dayCount, weatherData);
+        const treeList = [];
+        for(let i=0; i<this.dayCount; i++) {
+            treeList[i] = this.treeConstructor(this.input.value, this.dayCount, weatherData);
+        }
         
         this.weatherOutput.innerHTML = ""; 
-        this.weatherOutput.appendChild(myTree);
+        this.weatherOutput.appendChild(treeList[0]);
         
+        /*
         for(let i=0;i<this.dayCount;i++){
             let start = i*((weatherData.list.length)/this.dayCount);
             let end = ((i+1)*((weatherData.list.length)/this.dayCount));
             let chunk = weatherData.list.slice(start, end);
             this.setWeatherData(`day-${i+1}`, chunk);
         }
+        */
     }
 
     treeConstructor(headingContent, dayCount, weatherData) {
@@ -51,50 +53,66 @@ export class WeatherRenderer {
         Tyto stromy dat do jednoho pole a tim prochazet.
         spodni divy se dny - budou mit nastavene listenery na click a tim se budou prepinat.
         */
+
         const builder = new DOMBuilder();
 
         builder.appendHeading(headingContent);
+
         const wrapper = builder.appendDiv("wrapper");
         builder.setParent(wrapper);
-        
+
+        //------------------------------------------------------------------- innerOne
         const innerOne = builder.appendDiv("inner-one");
-        const innerTwo = builder.appendDiv("inner-two");
+        builder.setParent(innerOne);
+
+        const mainInfoWrapper = builder.appendDiv("main-info");
+        builder.setParent(mainInfoWrapper);
+
+        builder.appendDiv("main-info-visual");
+
+        const mainInfoData = builder.appendDiv("main-info-data");
+
+        builder.setParent(mainInfoData);
+        // doplnit kontent
         
-        builder.setParent(innerTwo); 
+
+        builder.setParent(innerOne);
+
+        const timeLine = builder.appendDiv("time-line");
+        builder.setParent(timeLine);
+        for(let i=0;i<((40)/dayCount);i++) { //upravit
+            let threeHourStep = builder.appendDiv(`step-${i+1}`);
+            // doplnit kontent
+        }
+    
+        //------------------------------------------------------------------- innerTwo
+        builder.setParent(wrapper);    
+        const innerTwo = builder.appendDiv("inner-two");
+        builder.setParent(innerTwo);
 
         for(let i=0;i<dayCount;i++){
-            builder.appendDiv(`day-${i+1}`);
+            let daySwitch = builder.appendDiv(`day-switch-${i+1}`);
+            // doplnit kontent
         }
-        builder.setParent(builder.root);
 
+        builder.setParent(builder.root);
         return builder.root;
-        
     }
 
-    loadDefaulCity(dayCount) {
+    loadDefaulCity() {
         /*
         Pri otevreni stranky se nactou data k tomuto mestu
 
         Moznost rozsirit o funkcionalitu a pri otevreni stranky nacitat mesto pomoci geolokace
         */
-
-        const builder = new DOMBuilder();
-
-        builder.appendHeading("Olomouc");
-        const wrapper = builder.appendDiv("wrapper");
-        builder.setParent(wrapper);
-        
-        const innerOne = builder.appendDiv("inner-one");
-        const innerTwo = builder.appendDiv("inner-two");
-        
-        builder.setParent(innerTwo); 
-
-        for(let i=0;i<dayCount;i++){
-            builder.appendDiv(`day-${i+1}`);
+        const treeList = [];
+        for(let i=0; i<this.dayCount; i++) {
+            treeList[i] = this.treeConstructor("Olomouc", this.dayCount, 1 /* Data pro olomouc */);
         }
-        builder.setParent(builder.root);
+        
+        this.weatherOutput.innerHTML = ""; 
+        this.weatherOutput.appendChild(treeList[0]);
 
-        return builder.root;
     }
 
     /*
