@@ -1,45 +1,48 @@
 import { DOMBuilder } from "./dom-builder.js";
-import { DayWeather } from "./day-weather.js";
+import { WeatherDay } from "./weather-day.js";
 
 export class WeatherRenderer {
     /*
     Ridici trida pro generovani a DOM struktury widgetu pocasi
     */
-    constructor (input, weatherOutput, dayCount) {
+    constructor (input, weatherOutput, dayCount, unitsType) {
         /**
          * @param {string} input - ID inputu pro vyhledavani
          * @param {string} weatherOutput - ID elementu, ve kterem se struktura vytvori
          * @param {number} dayCount - pocet dni
+         * @param {string} unitsType - urceni jednotek - standard(Kelvin)/metric/imperial
          */
 
         this.input = document.getElementById(input);
         this.weatherOutput = document.getElementById(weatherOutput);
         this.dayCount = dayCount;
+        this.unitsType = unitsType;
 
-        const defaulCity = this.loadDefaulCity();
     }
 
-    renderData(weatherData) {
+    renderData(weatherData, defaultCity=null) {
         /*
         Ridici metoda pro vypis udaju o pocasi
         */
-        console.log(weatherData.list);
+
+        var cityName = this.input.value;
+        if(defaultCity) {       //je potreba zvladt nastavit pro defaultni mesto
+            cityName = defaultCity;
+        }
+
         const treeList = [];
         for(let i=0; i<this.dayCount; i++) {
-            treeList[i] = this.treeConstructor(this.input.value, this.dayCount, weatherData);
-        }
-        
-        this.weatherOutput.innerHTML = ""; 
-        this.weatherOutput.appendChild(treeList[0]);
-        
-        /*
-        for(let i=0;i<this.dayCount;i++){
+
             let start = i*((weatherData.list.length)/this.dayCount);
             let end = ((i+1)*((weatherData.list.length)/this.dayCount));
             let chunk = weatherData.list.slice(start, end);
-            this.setWeatherData(`day-${i+1}`, chunk);
+
+            treeList[i] = this.treeConstructor(cityName, this.dayCount, chunk);
         }
-        */
+
+        this.weatherOutput.innerHTML = ""; 
+        this.weatherOutput.appendChild(treeList[0]);
+        
     }
 
     treeConstructor(headingContent, dayCount, weatherData) {
@@ -47,16 +50,11 @@ export class WeatherRenderer {
         Metoda pro postaveni DOM stromu - widgetu podle zadanych parametru
         */
 
-
-        /**
-        Postup pro priste - vygenerovat 5 stromu pro kazdy den zvlast a pri klikani na jine dny mezi nimi prepinat - pridelavat a oddelavat z weather-output
-        Tyto stromy dat do jednoho pole a tim prochazet.
-        spodni divy se dny - budou mit nastavene listenery na click a tim se budou prepinat.
-        */
-
         const builder = new DOMBuilder();
+        const weatherDay = new WeatherDay(weatherData);
+        console.log(weatherData);
 
-        builder.appendHeading(headingContent);
+        builder.appendHeading("h1", headingContent);
 
         const wrapper = builder.appendDiv("wrapper");
         builder.setParent(wrapper);
@@ -74,13 +72,15 @@ export class WeatherRenderer {
 
         builder.setParent(mainInfoData);
         // doplnit kontent
-        
+        console.log(weatherDay.get_time(0));
+        builder.appendHeading("h2", weatherDay.get_time(0));
+        builder.appendHeading("h2", weatherDay.get_temp(0));
 
         builder.setParent(innerOne);
 
         const timeLine = builder.appendDiv("time-line");
         builder.setParent(timeLine);
-        for(let i=0;i<((40)/dayCount);i++) { //upravit
+        for(let i=0;i<((weatherData.length)/dayCount);i++) { //upravit
             let threeHourStep = builder.appendDiv(`step-${i+1}`);
             // doplnit kontent
         }
@@ -99,33 +99,16 @@ export class WeatherRenderer {
         return builder.root;
     }
 
-    loadDefaulCity() {
+    async loadDefaulCity(coord, apiKey) {
         /*
         Pri otevreni stranky se nactou data k tomuto mestu
 
         Moznost rozsirit o funkcionalitu a pri otevreni stranky nacitat mesto pomoci geolokace
         */
-        const treeList = [];
-        for(let i=0; i<this.dayCount; i++) {
-            treeList[i] = this.treeConstructor("Olomouc", this.dayCount, 1 /* Data pro olomouc */);
-        }
-        
-        this.weatherOutput.innerHTML = ""; 
-        this.weatherOutput.appendChild(treeList[0]);
+        let response = await fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${coord.lat}&lon=${coord.lon}&appid=${apiKey}&units=${this.unitsType}`);
+        let weatherData = await response.json();
+
+        this.renderData(weatherData, weatherData.city.name);
 
     }
-
-    /*
-    setWeatherData(target, data) {
-        /**
-         * Metoda na zapsani jednotlivych dat do prislusneho dne
-         * @param {string} target - class name elementu, kde se maji data vypsat
-         * @param {list}  data - pole s daty k vypsani
-         *
-        let test = new DayWeather(data, this.dayCount);
-        
-          
-    }
-    */
-   
 }

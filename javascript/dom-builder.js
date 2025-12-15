@@ -14,8 +14,8 @@ export class DOMBuilder {
         this.currentParent = parent;
     }
 
-    appendHeading(payload, setClass=null) {
-        let h = document.createElement("h1");
+    appendHeading(headingType, payload, setClass=null) {
+        let h = document.createElement(headingType);
         if(setClass) {
             h.classList.add(setClass)
         }

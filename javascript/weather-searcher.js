@@ -3,17 +3,19 @@ export class WeatherSearcher {
     /*
     Trida pro obsluhu vyhledani informaci o pocsi ve vyhledavanem meste
     */
-    constructor(apiKey, searchButton, inputBox, cities) {
+    constructor(apiKey, searchButton, inputBox, unitsType, cities) {
         /**
          * Konstruktor pro inicializaci. Pridava eventListener na "click" pro tlacitko.
          * @param {API KEY} apiKey - API key
          * @param {string} searchButton - ID tlacitka, ktere slouzi pro "vyhledat"
          * @param {string} inputBox - ID inputu, do ktereho se pise hledane mesto
+         * @param {string} unitsType - urceni jednotek - standard(Kelvin)/metric/imperial
          * @param {list} cities - pole objektu mest 
          */
         this.apiKey = apiKey;
         this.searchButton = document.getElementById(searchButton);
         this.inputBox = document.getElementById(inputBox);
+        this.unitsType = unitsType;
         this.cities = cities;
 
         this.searchButton.addEventListener("click", () => this.searchWeather());
@@ -66,7 +68,7 @@ export class WeatherSearcher {
         */
         let result = this.searchObject();
         
-        let response = await fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${result.coord.lat}&lon=${result.coord.lon}&appid=12e49942ab49cef19008daf14e55b97e&units=metric`);
+        let response = await fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${result.coord.lat}&lon=${result.coord.lon}&appid=${this.apiKey}&units=${unitsType}`);
         this.weatherData = await response.json();
         // ^ "weatherData" nyni obsahuje udaje o predpovedi pocasi pro zadane mesto na 5 dni dopredu s 3hod rozestupy. Celkem tedy 40 zaznamu
         

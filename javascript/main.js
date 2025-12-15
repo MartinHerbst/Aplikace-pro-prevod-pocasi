@@ -14,8 +14,11 @@ class WeatherApp {
         this.weatherRenderer = new WeatherRenderer(
             this.config.inputBoxId,
             this.config.weatherOutputId, 
-            this.config.dayCount
+            this.config.dayCount,
+            this.config.unitsType
         );
+
+        this.weatherRenderer.loadDefaulCity(this.config.defaultCoord, this.config.apiKey);
 
         this.allCities = new Cities(this.config.cityDataSrc);
 
@@ -32,6 +35,7 @@ class WeatherApp {
             this.config.apiKey,
             this.config.searchBtnId,
             this.config.inputBoxId,
+            this.config.unitsType,
             this.allCities.cities
         );
 
@@ -49,5 +53,7 @@ const app = new WeatherApp({
     inputBoxId: "input-box",
     resultBoxId: "result-box",
     searchBtnId: "search-weather-btn",
-    apiKey: "12e49942ab49cef19008daf14e55b97e"
+    apiKey: "12e49942ab49cef19008daf14e55b97e",
+    unitsType: "metric",
+    defaultCoord: {lon: 17.251751, lat: 49.59552}
 });

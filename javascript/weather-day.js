@@ -1,23 +1,23 @@
-export class DayWeather {
-    constructor(data, dayCount) {
+export class WeatherDay {
+    constructor(data) {
         /**
          * @param {list} data - pole s udaji o pocasi pro dany den
-         * @param {number} dayCount - pocet dni
          */
+
         this.data = data;
-        this.dayCount = dayCount;
     }
 
     get_time(index) {
-        return this.data[index].dt_txt;
+        let date = new Date(this.data[index].dt * 1000);
+        return date.toLocaleString(navigator.language);
     }
 
     get_temp(index) {
-        return this.data[index].main.temp;
+        return Math.round(this.data[index].main.temp * 10) / 10;
     }
 
     get_feelsLike(index) {
-        return this.data[index].main.feels_like;
+        return Math.round(this.data[index].main.feels_like * 10) / 10;
     }
 
     get_humidity(index) {
@@ -25,11 +25,11 @@ export class DayWeather {
     }
 
     get_tempMin(index) {
-        return this.data[index].main.temp_min;
+        return Math.round(this.data[index].main.temp_min * 10) / 10;
     }
 
     get_tempMax(index) {
-        return this.data[index].main.temp_max;
+        return Math.round(this.data[index].main.temp_max * 10) / 10;
     }
 
     get_skyStatus(index) {
