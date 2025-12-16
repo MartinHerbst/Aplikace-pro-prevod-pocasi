@@ -1,3 +1,4 @@
+
 export class WeatherDay {
     constructor(data) {
         /**
@@ -7,9 +8,30 @@ export class WeatherDay {
         this.data = data;
     }
 
+    get_date(index) {
+        return new Date(this.data[index].dt * 1000);
+    }
+
     get_time(index) {
-        let date = new Date(this.data[index].dt * 1000);
-        return date.toLocaleString(navigator.language);
+        const date = this.get_date(index);
+
+        let time = new Intl.DateTimeFormat(navigator.language, {hour: "2-digit", minute: "2-digit"}).format(date);
+        if(time.charAt(0) == "0") { time = time.slice(1) };
+
+        return time;
+    }
+
+    get_dayDate(index) {
+        const date = this.get_date(index);
+
+        return new Intl.DateTimeFormat(navigator.language, {day: "2-digit", month: "2-digit", year: "numeric"}).format(date);
+    }
+
+    get_weekDay(index) {
+        const date = this.get_date(index);
+
+        const day = new Intl.DateTimeFormat(navigator.language, {weekday: "long"}).format(date);
+        return day.charAt(0).toUpperCase() + day.slice(1);
     }
 
     get_temp(index) {

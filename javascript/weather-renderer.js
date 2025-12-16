@@ -52,6 +52,7 @@ export class WeatherRenderer {
 
         const builder = new DOMBuilder();
         const weatherDay = new WeatherDay(weatherData);
+
         console.log(weatherData);
 
         builder.appendHeading("h1", headingContent);
@@ -72,9 +73,14 @@ export class WeatherRenderer {
 
         builder.setParent(mainInfoData);
         // doplnit kontent
-        console.log(weatherDay.get_time(0));
+        
+    
+        builder.appendHeading("h2", weatherDay.get_weekDay(0) + " " + weatherDay.get_dayDate(0));
         builder.appendHeading("h2", weatherDay.get_time(0));
-        builder.appendHeading("h2", weatherDay.get_temp(0));
+        builder.appendHeading("h1", weatherDay.get_temp(0) + " °C");
+        builder.appendParagraph("pocitově (feels like) " + weatherDay.get_feelsLike);
+        builder.appendParagraph("rychlost větru (wind speed) " + weatherDay.get_windSpeed);
+        builder.appendParagraph(weatherDay.get_skyStatus);
 
         builder.setParent(innerOne);
 

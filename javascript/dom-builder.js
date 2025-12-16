@@ -24,6 +24,16 @@ export class DOMBuilder {
         return h;
     }
 
+    appendParagraph(payload, setClass=null) {
+        let p = document.createElement("p");
+        if(setClass) {
+            p.classList.add(setClass)
+        }
+        p.textContent = payload;
+        this.currentParent.appendChild(p);
+        return p;
+    }
+
     appendDiv(setClass=null) {
         let d = document.createElement("div");
         if(setClass) {
