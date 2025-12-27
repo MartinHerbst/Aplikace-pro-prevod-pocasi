@@ -15,7 +15,7 @@ export class DOMBuilder {
     }
 
     appendHeading(headingType, payload, setClass=null) {
-        let h = document.createElement(headingType);
+        const h = document.createElement(headingType);
         if(setClass) {
             h.classList.add(setClass)
         }
@@ -25,7 +25,7 @@ export class DOMBuilder {
     }
 
     appendParagraph(payload, setClass=null) {
-        let p = document.createElement("p");
+        const p = document.createElement("p");
         if(setClass) {
             p.classList.add(setClass)
         }
@@ -35,11 +35,19 @@ export class DOMBuilder {
     }
 
     appendDiv(setClass=null) {
-        let d = document.createElement("div");
+        const d = document.createElement("div");
         if(setClass) {
             d.classList.add(setClass)
         }
         this.currentParent.appendChild(d);
         return d;
+    }
+
+    appendImg(source, description) {
+        const img = document.createElement("img");
+        img.src = source;
+        img.alt = description;
+        this.currentParent.appendChild(img);
+        return img;
     }
 }

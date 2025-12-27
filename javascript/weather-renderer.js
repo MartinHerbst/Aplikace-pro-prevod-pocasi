@@ -24,7 +24,6 @@ export class WeatherRenderer {
         /*
         Ridici metoda pro vypis udaju o pocasi
         */
-
         var cityName = this.input.value;
         if(defaultCity) {       //je potreba zvladt nastavit pro defaultni mesto
             cityName = defaultCity;
@@ -45,7 +44,7 @@ export class WeatherRenderer {
         
     }
 
-    treeConstructor(headingContent, dayCount, weatherData) {
+    treeConstructor(cityName, dayCount, weatherData) {
         /*
         Metoda pro postaveni DOM stromu - widgetu podle zadanych parametru
         */
@@ -55,7 +54,7 @@ export class WeatherRenderer {
 
         console.log(weatherData);
 
-        builder.appendHeading("h1", headingContent);
+        builder.appendHeading("h1", cityName);
 
         const wrapper = builder.appendDiv("wrapper");
         builder.setParent(wrapper);
@@ -64,42 +63,53 @@ export class WeatherRenderer {
         const innerOne = builder.appendDiv("inner-one");
         builder.setParent(innerOne);
 
-        const mainInfoWrapper = builder.appendDiv("main-info");
-        builder.setParent(mainInfoWrapper);
+            const mainInfoWrapper = builder.appendDiv("main-info");
+            builder.setParent(mainInfoWrapper);
 
-        builder.appendDiv("main-info-visual");
+                const mainInfoVisual = builder.appendDiv("main-info-visual");
+                builder.setParent(mainInfoVisual);
 
-        const mainInfoData = builder.appendDiv("main-info-data");
+                    builder.appendImg(weatherDay.get_weatherIconSrc(0), weatherDay.get_weatherDescription(0));
 
-        builder.setParent(mainInfoData);
-        // doplnit kontent
+            builder.setParent(mainInfoWrapper);
+
+                const mainInfoData = builder.appendDiv("main-info-data");
+                builder.setParent(mainInfoData);
         
-    
-        builder.appendHeading("h2", weatherDay.get_weekDay(0) + " " + weatherDay.get_dayDate(0));
-        builder.appendHeading("h2", weatherDay.get_time(0));
-        builder.appendHeading("h1", weatherDay.get_temp(0) + " °C");
-        builder.appendParagraph("pocitově (feels like) " + weatherDay.get_feelsLike);
-        builder.appendParagraph("rychlost větru (wind speed) " + weatherDay.get_windSpeed);
-        builder.appendParagraph(weatherDay.get_skyStatus);
+                    builder.appendHeading("h2", weatherDay.get_weekDay(0) + " " + weatherDay.get_dayDate(0));
+                    builder.appendHeading("h2", weatherDay.get_time(0));
+                    builder.appendHeading("h1", weatherDay.get_temp(0) + " °C");
+                    builder.appendParagraph("pocitově " + weatherDay.get_feelsLike(0));
+                    builder.appendParagraph("vítr " + weatherDay.get_windSpeed(0) + " km/h");
+                    builder.appendParagraph(weatherDay.get_skyStatus(0));
 
         builder.setParent(innerOne);
 
-        const timeLine = builder.appendDiv("time-line");
-        builder.setParent(timeLine);
-        for(let i=0;i<((weatherData.length)/dayCount);i++) { //upravit
-            let threeHourStep = builder.appendDiv(`step-${i+1}`);
-            // doplnit kontent
-        }
+            const timeLine = builder.appendDiv("time-line");
+            builder.setParent(timeLine);
+
+                for(let i=0;i<weatherData.length;i++) { 
+                    let step = builder.appendDiv(`step-${i+1}`);
+                    builder.setParent(step);
+                        builder.appendHeading("h4", weatherDay.get_temp(i));
+                        builder.appendHeading("h4", weatherDay.get_time(i));
+                }
     
         //------------------------------------------------------------------- innerTwo
-        builder.setParent(wrapper);    
-        const innerTwo = builder.appendDiv("inner-two");
-        builder.setParent(innerTwo);
+        builder.setParent(wrapper);
+        
+            const innerTwo = builder.appendDiv("inner-two");
+            builder.setParent(innerTwo);
 
-        for(let i=0;i<dayCount;i++){
-            let daySwitch = builder.appendDiv(`day-switch-${i+1}`);
-            // doplnit kontent
-        }
+                for(let i=0;i<dayCount;i++){
+                    let daySwitch = builder.appendDiv(`day-switch-${i+1}`);
+                    builder.setParent(daySwitch);
+
+                        builder.appendHeading("h3", weatherDay.get_weekDay(i));
+                        builder.appendHeading("h3", weatherDay.get_dayDate(i));
+                        builder.appendHeading("h2", cityName);
+                }
+
 
         builder.setParent(builder.root);
         return builder.root;
@@ -111,10 +121,9 @@ export class WeatherRenderer {
 
         Moznost rozsirit o funkcionalitu a pri otevreni stranky nacitat mesto pomoci geolokace
         */
-        let response = await fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${coord.lat}&lon=${coord.lon}&appid=${apiKey}&units=${this.unitsType}`);
+        let response = await fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${coord.lat}&lon=${coord.lon}&appid=${apiKey}&units=${this.unitsType}&lang=cz`);
         let weatherData = await response.json();
 
         this.renderData(weatherData, weatherData.city.name);
-
     }
 }

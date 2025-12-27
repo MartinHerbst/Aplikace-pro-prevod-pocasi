@@ -55,10 +55,18 @@ export class WeatherDay {
     }
 
     get_skyStatus(index) {
-        return this.data[index].weather.main;
+        return this.data[index].weather[index].description;
     }
 
     get_windSpeed(index) {
         return this.data[index].wind.speed;
+    }
+
+    get_weatherIconSrc(index) {
+        return `https://openweathermap.org/img/wn/${this.data[index].weather[index].icon}@2x.png`;
+    }
+
+    get_weatherDescription(index) {
+        return this.data[index].weather[index].description;
     }
 }
