@@ -1,5 +1,5 @@
 
-export class WeatherDay {
+export class Weather {
     constructor(data) {
         /**
          * @param {list} data - pole s udaji o pocasi pro dany den
@@ -55,7 +55,7 @@ export class WeatherDay {
     }
 
     get_skyStatus(index) {
-        return this.data[index].weather[index].description;
+        return this.data[index].weather[0].description;
     }
 
     get_windSpeed(index) {

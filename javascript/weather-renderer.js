@@ -1,5 +1,5 @@
 import { DOMBuilder } from "./dom-builder.js";
-import { WeatherDay } from "./weather-day.js";
+import { Weather } from "./weather.js";
 
 export class WeatherRenderer {
     /*
@@ -16,7 +16,15 @@ export class WeatherRenderer {
         this.input = document.getElementById(input);
         this.weatherOutput = document.getElementById(weatherOutput);
         this.dayCount = dayCount;
+
         this.unitsType = unitsType;
+
+        this.speedUnit = "km/h";
+        this.tempUnit = "°C";
+        if (this.unitsType == "imperial") {
+            this.tempUnit = "°F"
+            this.speedUnit = "mph"
+        }
 
     }
 
@@ -25,7 +33,7 @@ export class WeatherRenderer {
         Ridici metoda pro vypis udaju o pocasi
         */
         var cityName = this.input.value;
-        if(defaultCity) {       //je potreba zvladt nastavit pro defaultni mesto
+        if(defaultCity) {       //je potreba zvlast nastavit pro defaultni mesto
             cityName = defaultCity;
         }
 
@@ -36,23 +44,24 @@ export class WeatherRenderer {
             let end = ((i+1)*((weatherData.list.length)/this.dayCount));
             let chunk = weatherData.list.slice(start, end);
 
-            treeList[i] = this.treeConstructor(cityName, this.dayCount, chunk);
+            treeList[i] = this.treeConstructor(cityName, this.dayCount, chunk, weatherData);
         }
 
-        this.weatherOutput.innerHTML = ""; 
-        this.weatherOutput.appendChild(treeList[0]);
+        this.weatherOutput.innerHTML = "";
+        this.completeTreeList = treeList;
+        this.weatherOutput.appendChild(this.completeTreeList[0]);
         
     }
 
-    treeConstructor(cityName, dayCount, weatherData) {
+    treeConstructor(cityName, dayCount, chunk, weatherData) {
         /*
         Metoda pro postaveni DOM stromu - widgetu podle zadanych parametru
         */
 
         const builder = new DOMBuilder();
-        const weatherDay = new WeatherDay(weatherData);
-
-        console.log(weatherData);
+        const weatherDay = new Weather(chunk);
+        const weatherWeek = new Weather(weatherData.list);
+        console.log(weatherWeek)
 
         builder.appendHeading("h1", cityName);
 
@@ -78,9 +87,9 @@ export class WeatherRenderer {
         
                     builder.appendHeading("h2", weatherDay.get_weekDay(0) + " " + weatherDay.get_dayDate(0));
                     builder.appendHeading("h2", weatherDay.get_time(0));
-                    builder.appendHeading("h1", weatherDay.get_temp(0) + " °C");
-                    builder.appendParagraph("pocitově " + weatherDay.get_feelsLike(0));
-                    builder.appendParagraph("vítr " + weatherDay.get_windSpeed(0) + " km/h");
+                    builder.appendHeading("h1", weatherDay.get_temp(0) + this.tempUnit);
+                    builder.appendParagraph("pocitově " + weatherDay.get_feelsLike(0) + this.tempUnit);
+                    builder.appendParagraph("vítr " + weatherDay.get_windSpeed(0) + this.speedUnit);
                     builder.appendParagraph(weatherDay.get_skyStatus(0));
 
         builder.setParent(innerOne);
@@ -88,11 +97,13 @@ export class WeatherRenderer {
             const timeLine = builder.appendDiv("time-line");
             builder.setParent(timeLine);
 
-                for(let i=0;i<weatherData.length;i++) { 
+                for(let i=0;i<chunk.length;i++) { 
                     let step = builder.appendDiv(`step-${i+1}`);
                     builder.setParent(step);
-                        builder.appendHeading("h4", weatherDay.get_temp(i));
+                        builder.appendHeading("h4", weatherDay.get_skyStatus(i));
+                        builder.appendHeading("h4", weatherDay.get_temp(i) + this.tempUnit);
                         builder.appendHeading("h4", weatherDay.get_time(i));
+                    builder.setParent(timeLine);
                 }
     
         //------------------------------------------------------------------- innerTwo
@@ -103,16 +114,27 @@ export class WeatherRenderer {
 
                 for(let i=0;i<dayCount;i++){
                     let daySwitch = builder.appendDiv(`day-switch-${i+1}`);
+                    daySwitch.addEventListener("click", () => {
+                        this.switchDay(i);
+                    })
                     builder.setParent(daySwitch);
 
-                        builder.appendHeading("h3", weatherDay.get_weekDay(i));
-                        builder.appendHeading("h3", weatherDay.get_dayDate(i));
+                        builder.appendHeading("h3", weatherWeek.get_weekDay(i*(weatherWeek.data.length/dayCount)));
+                        builder.appendHeading("h3", weatherWeek.get_dayDate(i*(weatherWeek.data.length/dayCount)));
                         builder.appendHeading("h2", cityName);
+
+                    builder.setParent(innerTwo);
                 }
 
 
         builder.setParent(builder.root);
         return builder.root;
+    }
+
+
+    switchDay(index) {
+        this.weatherOutput.innerHTML = "";
+        this.weatherOutput.appendChild(this.completeTreeList[index]);
     }
 
     async loadDefaulCity(coord, apiKey) {

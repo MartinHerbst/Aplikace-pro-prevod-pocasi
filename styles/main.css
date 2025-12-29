@@ -1,0 +1,74 @@
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: start;
+  flex-flow: row wrap;
+}
+body #autocomplete-search {
+  overflow: hidden;
+}
+body #autocomplete-search .wrapper .search {
+  display: flex;
+  flex-flow: row wrap;
+}
+body #autocomplete-search .wrapper .search input {
+  flex: 1;
+}
+body #autocomplete-search .wrapper .search button {
+  flex: 1;
+}
+body #weather-output {
+  display: flex;
+  justify-content: center;
+}
+body #weather-output .root .wrapper .inner-one {
+  border: 3px solid blue;
+}
+body #weather-output .root .wrapper .inner-one .main-info {
+  display: flex;
+  flex-flow: row wrap-reverse;
+  width: 100%;
+  border: 2px solid purple;
+}
+body #weather-output .root .wrapper .inner-one .main-info .main-info-visual {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+  border: 1px solid blueviolet;
+}
+body #weather-output .root .wrapper .inner-one .main-info .main-info-visual img {
+  width: auto;
+  height: auto;
+  -o-object-fit: cover;
+     object-fit: cover;
+}
+body #weather-output .root .wrapper .inner-one .main-info .main-info-data {
+  flex: 1;
+  text-align: right;
+  border: 1px solid blueviolet;
+}
+body #weather-output .root .wrapper .inner-one .time-line {
+  display: flex;
+  flex-flow: row wrap;
+  border: 2px solid green;
+}
+body #weather-output .root .wrapper .inner-one .time-line [class^=step-] {
+  flex: 1;
+  border: 1px solid brown;
+}
+body #weather-output .root .wrapper .inner-two {
+  display: flex;
+  flex-flow: row wrap;
+  border: 3px solid red;
+}
+body #weather-output .root .wrapper .inner-two [class^=day-switch-] {
+  flex: 1;
+  border: 2px solid orange;
+}/*# sourceMappingURL=main.css.map */

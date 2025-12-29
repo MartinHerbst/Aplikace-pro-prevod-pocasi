@@ -1,0 +1,121 @@
+
+
+* {
+    box-sizing: border-box;
+    padding: 0;                                                                                   
+    margin: 0;
+}
+
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: start;
+    flex-flow: row wrap;
+    #autocomplete-search {
+        overflow: hidden;
+        .wrapper {
+            
+            .search {
+                display: flex;
+                flex-flow: row wrap;
+                
+                input {
+                    flex: 1;
+                }
+                button {
+                    flex: 1;
+                    
+                }
+            }
+            .result {
+                #result-box {
+
+                }
+            }
+        }
+    }
+
+    #weather-output {
+        display: flex;
+        justify-content: center;
+        .root {
+            > h1 {
+
+            }
+            .wrapper {
+                .inner-one {
+                    border: 3px solid blue;
+                    .main-info {
+                        display: flex;
+                        flex-flow: row wrap-reverse;
+                        width: 100%;
+
+                        border: 2px solid purple;
+                        .main-info-visual {
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+
+                            flex: 1;
+
+                            border: 1px solid blueviolet;
+                            img {
+                                width: auto;
+                                height: auto;
+                                object-fit: cover;
+                            }
+                        }
+                        .main-info-data {
+                            
+
+
+                            flex: 1;
+                            text-align: right;
+                            border: 1px solid blueviolet;
+                            h2 {
+
+                            }
+                            h1 {
+
+                            }
+                            p {
+
+                            }
+                        }
+                    }
+                    .time-line {
+                        display: flex;
+                        flex-flow: row wrap;
+
+                        border: 2px solid green;
+                        [class^="step-"] {
+                            flex: 1;
+                            border: 1px solid brown;
+                            h4 {
+
+                            }
+                        }
+                    }
+                }
+                .inner-two {
+                    display: flex;
+                    flex-flow: row wrap;
+
+                    border: 3px solid red;
+                    [class^="day-switch-"] {
+                       flex: 1;
+                        border: 2px solid orange;
+                        h3 {
+
+                        }
+                        h2 {
+
+                        }
+                    }
+                }
+            }
+            
+        }
+    }
+}

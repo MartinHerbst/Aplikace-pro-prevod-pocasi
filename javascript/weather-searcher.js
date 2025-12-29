@@ -68,7 +68,7 @@ export class WeatherSearcher {
         */
         let result = this.searchObject();
         
-        let response = await fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${result.coord.lat}&lon=${result.coord.lon}&appid=${this.apiKey}&units=${unitsType}&lang=cz`);
+        let response = await fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${result.coord.lat}&lon=${result.coord.lon}&appid=${this.apiKey}&units=${this.unitsType}&lang=cz`);
         this.weatherData = await response.json();
         // ^ "weatherData" nyni obsahuje udaje o predpovedi pocasi pro zadane mesto na 5 dni dopredu s 3hod rozestupy. Celkem tedy 40 zaznamu
         
