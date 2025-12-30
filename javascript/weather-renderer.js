@@ -46,10 +46,9 @@ export class WeatherRenderer {
 
             treeList[i] = this.treeConstructor(cityName, this.dayCount, chunk, weatherData);
         }
-
-        this.weatherOutput.innerHTML = "";
+        
         this.completeTreeList = treeList;
-        this.weatherOutput.appendChild(this.completeTreeList[0]);
+        this.switchDay(0);
         
     }
 
