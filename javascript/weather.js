@@ -1,8 +1,11 @@
 
 export class Weather {
+    /*
+    Trida pro ziskavani informaci o pocasi
+    */
     constructor(data) {
         /**
-         * @param {list} data - pole s udaji o pocasi pro dany den
+         * @param {list} data - pole s udaji o pocasi pro dany casovy interval
          */
 
         this.data = data;
