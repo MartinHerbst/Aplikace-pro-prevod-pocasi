@@ -1,0 +1,46 @@
+name: Deploy to MartinHerbst.github.io
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout ZDROJOVÉHO repozitáře do samostatné složky
+      - name: Checkout SOURCE repo (Aplikace-pro-prevod-pocasi)
+        uses: actions/checkout@v4
+        with:
+          path: src_repo
+
+      # Checkout CÍLOVÉHO repozitáře do jiné složky
+      - name: Checkout TARGET repo (MartinHerbst.github.io)
+        uses: actions/checkout@v4
+        with:
+          repository: MartinHerbst/MartinHerbst.github.io
+          token: ${{ secrets.GH_PAT }}   # PAT se write právy do cílového repa
+          path: target_repo
+
+      # Synchronizace souborů ze zdroje do cíle (vynecháme interní složky)
+      - name: Sync files from SOURCE to TARGET
+        run: |
+          rsync -av --delete \
+            --exclude '.git/' \
+            --exclude '.github/' \
+            --exclude 'node_modules/' \
+            src_repo/ target_repo/
+          # vypnout Jekyll (pro složky s podtržítkem apod.)
+          touch target_repo/.nojekyll
+
+      # Commit & push do cílového repozitáře
+      - name: Commit and push changes
+        run: |
+          cd target_repo
+          git config user.name "GitHub Action"
+          git config user.email "action@github.com"
+          git add -A
+          git commit -m "Automated deploy from Aplikace-pro-prevod-pocasi" || echo "No changes to commit"
+          git push
